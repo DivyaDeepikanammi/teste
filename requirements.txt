@@ -2,7 +2,6 @@ nltk
 streamlit
 fuzzywuzzy
 scikit-learn
-Pillow==9.0.0
-PIL==9.4.0
+PIL
 transformers==4.26.1
 lexrank==0.1.0
