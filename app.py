@@ -7,93 +7,80 @@ from nltk.corpus import stopwords
 nltk.download('punkt')
 nltk.download('stopwords')
 
-# Input text
-text = "This is a sample sentence. It contains some stop words."
-st.info(text)
-# Tokenize the text into words
-words = word_tokenize(text)
 
-# Filter out stop words
-stop_words = set(stopwords.words("english"))
-filtered_words = [word for word in words if word.casefold() not in stop_words]
+#import streamlit_extras
+from PIL import Image
+#from transformers import pipeline
+#import nltk
+#from nltk.corpus import stopwords
+#from nltk.tokenize import word_tokenize, sent_tokenize
+from C2 import nltk_summarizer
+#from sumy.parsers.plaintext import PlaintextParser
+#from sumy.nlp.tokenizers import Tokenizer
+#from sumy.summarizers.lex_rank import LexRankSummarizer
+from C3 import text_rank
 
-# Print the original text, tokenized words, and filtered words
-print("Original Text: ", text)
-st.write(text)
-print("Tokenized Words: ", words)
-st.write(words)
-print("Filtered Words: ", filtered_words)
-st.write(filtered_words)
+# this is first commit
 
-import nltk
-from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+st. set_page_config(layout="wide") 
 
-# Load NLTK's stop words
-stop_words = set(stopwords.words('english'))
+#summarizer = pipeline("summarization")
 
-# Function to preprocess text data
-def preprocess_text(text):
-    # Tokenize into sentences
-    sentences = nltk.sent_tokenize(text)
-    # Tokenize sentences into words
-    words = [nltk.word_tokenize(sent) for sent in sentences]
-    # Convert words to lowercase
-    words = [[word.lower() for word in sent if word.isalpha()] for sent in words]
-    # Remove stopwords
-    words = [[word for word in sent if word not in stop_words] for sent in words]
-    return words
+col1, col2, col3 = st.columns(3)
 
-# Function to compute sentence similarity using cosine similarity
-def sentence_similarity(sent1, sent2, vectorizer):
-    tfidf_matrix = vectorizer.transform([sent1, sent2])
-    similarity_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
-    return similarity_score
+with col1:
+    st.write(' ')
+with col2:
+    image = Image.open("C:\\Users\\divya\\OneDrive\\Desktop\\Work\\Vintern\\App\\Logo.png")
+    st.image(image)
+with col3:
+    st.write(' ')
 
-# Function to compute sentence similarity matrix
-def similarity_matrix(sentences, vectorizer):
-    similarity_matrix = []
-    for i in range(len(sentences)):
-        similarity_row = []
-        for j in range(len(sentences)):
-            if i != j:
-                similarity_score = sentence_similarity(' '.join(sentences[i]), ' '.join(sentences[j]), vectorizer)
-                similarity_row.append(similarity_score)
-        similarity_matrix.append(similarity_row)
-    return similarity_matrix
 
-# Function to calculate semantic similarity using fuzzywuzzy
-def semantic_similarity(sent1, sent2):
-    from fuzzywuzzy import fuzz
-    similarity_score = fuzz.ratio(sent1, sent2) / 100
-    return similarity_score
 
-# Function to perform extractive summarization
-def extractive_summarization(text, num_sentences=3):
-    sentences = preprocess_text(text)
-    sentences = [' '.join(sent) for sent in sentences]
-    vectorizer = TfidfVectorizer()
-    sentence_vectors = vectorizer.fit_transform(sentences)
-    sentence_similarity_matrix = similarity_matrix(sentences, vectorizer)
-    semantic_similarity_scores = [[semantic_similarity(sentences[i], sentences[j]) for j in range(len(sentences))] for i in range(len(sentences))]
-    sentence_similarity_scores = [[sentence_similarity_matrix[i][j] * semantic_similarity_scores[i][j] if i!=j else 0 for j in range(len(sentences))] for i in range(len(sentences))]
-    sentence_similarity_scores = [sum(row) for row in sentence_similarity_scores]
-    sorted_indices = sorted(range(len(sentence_similarity_scores)), key=lambda k: sentence_similarity_scores[k], reverse=True)
-    selected_indices = sorted_indices[:num_sentences]
-    selected_sentences = [sentences[i] for i in selected_indices]
-    summary = ' '.join(selected_sentences)
-    return summary
+st.title("  WELCOME TO SUMMERIZE ME")
+st.markdown("------")
 
-# Example usage
-text = "Centurion University of Technology and Management is a multi-sector, private state university from Odisha, India. "
-summary = extractive_summarization(text)
-print("Original Text:")
-print(text)
-print("\nSummary:")
-print(summary)
 
-st.write(text)
+options = ["lexRank", "Nltk", "TextRank"]
+selected_option = st.selectbox("Select an option", options)
 
-st.write(summary)
 
+if selected_option == "lexRank":
+    st.write("You selected LexRankSummarizer!")
+    text = st.text_area('Enter Text Below :', height=300)
+    submit = st.button('Generate') 
+    if submit:
+            parser = PlaintextParser.from_string(text, Tokenizer("english"))
+            summarizer = LexRankSummarizer()
+            summary = summarizer(parser.document, sentences_count=10)
+            summary = "\n".join(str(sentence) for sentence in summary)
+            st.success(summary)
+
+
+elif selected_option == "Nltk":
+    st.write("You selected Nltk_Summarizer!")
+    text3 = st.text_area('Enter Text Below :', height=900)
+    submit = st.button('Generate') 
+    if submit:
+        st.subheader("Summary:")
+        nltk_summary = nltk_summarizer([text3])
+        st.success(nltk_summary[0])
+
+elif selected_option == "TextRank":
+    st.write("You selected Text_Rank!")
+    text4 = st.text_area('Enter Text Below :', height=300)
+    submit = st.button('Generate') 
+    if submit: 
+        st.subheader("Summary:")
+        summary = text_rank(text4)
+        st.success(summary)
+
+
+
+
+    
+
+        
+        
+        
