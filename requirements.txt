@@ -1,0 +1,4 @@
+nltk
+streamlit
+fuzzywuzzy
+scikit-learn
