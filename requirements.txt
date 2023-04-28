@@ -4,4 +4,4 @@ fuzzywuzzy
 scikit-learn
 transformers==4.26.1
 lexrank==0.1.0
-PIL==1.1.6
+Pillow==9.5.0
