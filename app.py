@@ -5,7 +5,9 @@ from nltk.corpus import stopwords
 
 # Download NLTK data
 nltk.download('punkt')
+nltk.download('corpus')
 nltk.download('stopwords')
+from nltk.corpus.reader.plaintext import PlaintextParser
 
 
 #import streamlit_extras
