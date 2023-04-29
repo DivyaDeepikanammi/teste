@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 nltk.download('punkt')
 nltk.download('corpus')
 nltk.download('stopwords')
-from nltk.corpus.reader.plaintext import PlaintextParser
+#from nltk.corpus.reader.plaintext import PlaintextParser
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
